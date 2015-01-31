@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+	<appwizard>
+		<introduction>
+			<name>WordPress 4.1 for SAE</name>
+			<author>KB.compaq.lee</author>
+			<homepage>http://www.kber.org</homepage>
+			<description>
+				<![CDATA[
+				<p>基于官方原版 WordPress 4.1 定制，适用于新浪云计算。</p>
+				]]>
+			</description>
+		</introduction>
+		<platform>
+			<services>
+				<!‐‐ 例：初始化一个域名为:kber的Storage，域属性为“public”，更多参数配置请参考Storage的API文档 ‐‐>
+				<service name="kber" params="public">Storage</service>
+				<!‐‐ 例：初始化Mysql ‐‐>
+				<service>Mysql</service>
+			</services>
+		</platform>
+		<code>
+			<!‐‐ 初始化页面地址：即应用安装成功后跳转的地址，可以将应用初始化脚本或数据库导入脚本写在该文件中 ‐‐>
+			<initScript>wp-admin/install.php</initScript>
+		</code>
+</appwizard>
