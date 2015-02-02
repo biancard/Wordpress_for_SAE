@@ -24,6 +24,7 @@
 >    * google本地化于`\wp-includes\fonts\google\`目录下;
 >    * 新增对应调用css于`\wp-includes\css\google-fonts.css`;
 >    * 修改wp目录`\wp-includes\script-loader.php`文件的调用字体地址为本地：`607行`；
+>
 ## 2.缓存化gravatar头像：
 > * 主题`function.php`底部增加`get_avatar_cache`函数`大概558行左右`,代码如下：
 ```
