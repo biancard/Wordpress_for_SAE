@@ -60,7 +60,7 @@ return $avatar;
 add_filter('get_avatar', 'get_avatar_cache');
 ```
 将18行、23行、27行的kber替换成在sae中建立的`Storage`的名称即可；
-
+>
 ##3.兼容SAE修改处：
 > * 由于SAE中Wordpress无法上传图片，需要做下面修改，首先新建`sae_app_wizard.xml`的文件,代码如下：
 ```
@@ -149,8 +149,8 @@ $perms = $stat['mode'] & 0000666;
 @ chmod( $new_file, $perms );
 */
 ```
-
-##优化WP的URL在SAE的URL重写
+>
+## 4.优化WP的URL在SAE的URL重写
 在SAE根目录（即博客的根目录）新建一个名为：`config.yaml`的文件，代码如下：
 ```
 handle:
