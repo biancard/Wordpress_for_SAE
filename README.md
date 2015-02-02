@@ -12,7 +12,8 @@
 	define('SAE_URL','http://AA-AA.stor.sinaapp.com/uploads');
 ?>
 ```
-最后一步：
+> * 修改gravatar头像缓存的storage名->如优化过程的第二步。
+> * 最后一步：
 在后台将wp的地址改成域名，然后在sae代码编辑增加下面2行即可。
 ```
 	- rewrite: if(in_header["host"] ~ "^www.kber.org" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]"   
@@ -24,7 +25,7 @@
 >    * 新增对应调用css于`\wp-includes\css\google-fonts.css`;
 >    * 修改wp目录`\wp-includes\script-loader.php`文件的调用字体地址为本地：`607行`；
 
-##2.缓存化gravatar头像：
+## 2.缓存化gravatar头像：
 > * 主题`function.php`底部增加`get_avatar_cache`函数`大概558行左右`,代码如下：
 ```
 /*  
