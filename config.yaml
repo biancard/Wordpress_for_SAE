@@ -1,2 +1,4 @@
 handle:
-  - rewrite:if (!is_file() && !is_dir() && path ~ "^/(.*)") goto "index.php/$1"
+	- rewrite:if (!is_file() && !is_dir() && path ~ "^/(.*)") goto "index.php/$1"
+	- rewrite: if(in_header["host"] ~ "^www.kber.org" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]"   
+	- rewrite: if(in_header["host"] ~ "^kber.sinaapp.com" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]" 

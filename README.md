@@ -12,7 +12,12 @@
 	define('SAE_URL','http://AA-AA.stor.sinaapp.com/uploads');
 ?>
 ```
-
+最后一步：
+在后台将wp的地址改成域名，然后在sae代码编辑增加下面2行即可。
+```
+	- rewrite: if(in_header["host"] ~ "^www.kber.org" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]"   
+	- rewrite: if(in_header["host"] ~ "^kber.sinaapp.com" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]" 
+```
 ## 优化过程如下：
 ## 1.本地化google字体：	
 >    * google本地化于`\wp-includes\fonts\google\`目录下;
@@ -20,7 +25,40 @@
 >    * 修改wp目录`\wp-includes\script-loader.php`文件的调用字体地址为本地：`607行`；
 
 ##2.缓存化gravatar头像：
-> * 主题`function.php`增加`get_avatar_cache`函数`558行`,需要在sae中建立一个名为`cache`的`Storage`其属性为`Public`；
+> * 主题`function.php`底部增加`get_avatar_cache`函数`大概558行左右`,代码如下：
+```
+/*  
+* avatar头像缓存
+* Gravatar Cache To SAE Storage  
+*/  
+function get_avatar_cache($avatar){   
+if($_SERVER['PHP_SELF'] == '/wp-admin/options-discussion.php')   
+return $avatar;   
+$s = new SaeStorage();   
+$tmp = strpos($avatar, 'avatar/') + 7;   
+$avatar_id = substr($avatar, $tmp, strpos($avatar, '?') - $tmp);   
+$tmp = strpos($avatar, 'avatar/') + 7;   
+$pattern = "/(<img.* src=')([^']*)('.*)/";   
+$avatar_url = preg_replace($pattern, "$2", $avatar);   
+$avatar_url = str_replace("&", "&", $avatar_url);   
+$avatar_file = 'avatars/' . $avatar_id . '.png';   
+//echo '<!--' . $avatar_url . '-->   
+//                <!--' . $s->getUrl('wordpress', $avatar_file) . '-->';   
+if(!$s->fileExists('kber', $avatar_file)){   
+$content = @file_get_contents($avatar_url);   
+if(!$content)   
+return $avatar;   
+$attr = array('expires' => 'now plus 14 day');   
+$result = $s->write('kber', $avatar_file, $content, -1, $attr);   
+if ($result != true)   
+var_dump($s->errno(), $s->errmsg());   
+}   
+$avatar = preg_replace($pattern, "$1" . $s->getUrl('kber', $avatar_file) . "$3", $avatar);   
+return $avatar;   
+}   
+add_filter('get_avatar', 'get_avatar_cache');
+```
+将18行、23行、27行的kber替换成在sae中建立的`Storage`的名称即可；
 
 ##3.兼容SAE修改处：
 > * 由于SAE中Wordpress无法上传图片，需要做下面修改，首先新建`sae_app_wizard.xml`的文件,代码如下：
@@ -115,6 +153,10 @@ $perms = $stat['mode'] & 0000666;
 在SAE根目录（即博客的根目录）新建一个名为：`config.yaml`的文件，代码如下：
 ```
 handle:
-  - rewrite:if (!is_file() && !is_dir() && path ~ "^/(.*)") goto "index.php/$1"
+	- rewrite:if (!is_file() && !is_dir() && path ~ "^/(.*)") goto "index.php/$1"
+	- rewrite: if(in_header["host"] ~ "^www.kber.org" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]"   
+	- rewrite: if(in_header["host"] ~ "^kber.sinaapp.com" && path ~ "^(.*)$") goto "http://kber.org$1 [L,QSA,R=301]" 
 ```
-
+第一个是wp内部设置url调整URL格式时，将重写到index.php(类似nginx优化wp的重写。)
+第二个是将裸域名www.kber.org全部301到kber.org下，这样有利于搜索引擎对权重的集中
+第三个是将SAE默认的二级域名kber.sinaapp.com，301到kber.org，避免权重的分散。

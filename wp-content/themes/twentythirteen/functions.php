@@ -568,16 +568,16 @@ $avatar_url = str_replace("&", "&", $avatar_url);
 $avatar_file = 'avatars/' . $avatar_id . '.png';   
 //echo '<!--' . $avatar_url . '-->   
 //                <!--' . $s->getUrl('wordpress', $avatar_file) . '-->';   
-if(!$s->fileExists('wordpress', $avatar_file)){   
+if(!$s->fileExists('kber', $avatar_file)){   
 $content = @file_get_contents($avatar_url);   
 if(!$content)   
 return $avatar;   
 $attr = array('expires' => 'now plus 14 day');   
-$result = $s->write('wordpress', $avatar_file, $content, -1, $attr);   
+$result = $s->write('kber', $avatar_file, $content, -1, $attr);   
 if ($result != true)   
 var_dump($s->errno(), $s->errmsg());   
 }   
-$avatar = preg_replace($pattern, "$1" . $s->getUrl('wordpress', $avatar_file) . "$3", $avatar);   
+$avatar = preg_replace($pattern, "$1" . $s->getUrl('kber', $avatar_file) . "$3", $avatar);   
 return $avatar;   
 }   
 add_filter('get_avatar', 'get_avatar_cache');
